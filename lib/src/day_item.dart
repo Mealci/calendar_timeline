@@ -12,6 +12,7 @@ class DayItem extends StatelessWidget {
     this.activeDayColor,
     this.activeDayBackgroundColor,
     this.available = true,
+    this.dotNumber,
     this.showDot = false,
     this.dotColor,
     this.dayNameColor,
@@ -34,6 +35,7 @@ class DayItem extends StatelessWidget {
   final Color? activeDayBackgroundColor;
   final bool available;
   final bool showDot;
+  final int? dotNumber;
   final Color? dotColor;
   final Color? dayNameColor;
   final double height;
@@ -72,17 +74,18 @@ class DayItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               )
             : const BoxDecoration(color: Colors.transparent),
-        height: shrink ? shrinkHeight : height,
+        height: (shrink ? shrinkHeight : height) + (isSelected ? 8 : 0),
         width: shrink ? shrinkWidth : width,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             if (isSelected)
               Column(
                 children: [
-                  SizedBox(height: shrink ? 6 : 7),
+                  SizedBox(height: shrink ? 1 : 2),
                   if (!shrink) _buildDots(),
-                  SizedBox(height: shrink ? 6 : 7),
+                  SizedBox(height: shrink ? 1 : 2),
                 ],
               )
             else
@@ -112,17 +115,30 @@ class DayItem extends StatelessWidget {
     );
   }
 
-  Widget _buildDots() {
-    final dot = Container(
-      height: 5,
-      width: 5,
-      decoration: BoxDecoration(
+Widget _buildDots() {
+  // Print dotNumber + dotNumber type
+  print('dotNumber: $dotNumber, dotNumber type: ${dotNumber.runtimeType}');
+  if (dotNumber != null || dotNumber != 0) {
+    return Text(
+      dotNumber.toString(),
+      style: TextStyle(
         color: dotColor ?? activeDayColor ?? Colors.white,
-        shape: BoxShape.circle,
+        fontWeight: FontWeight.bold,
+        fontSize: 12, // Taille ajustable
       ),
     );
-    return dot;
   }
+
+  
+  return Container(
+    height: 5,
+    width: 5,
+    decoration: BoxDecoration(
+      color: dotColor ?? activeDayColor ?? Colors.white,
+      shape: BoxShape.circle,
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {

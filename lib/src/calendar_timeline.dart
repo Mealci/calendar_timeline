@@ -26,6 +26,7 @@ class CalendarTimeline extends StatefulWidget {
     this.activeDayColor,
     this.activeBackgroundDayColor,
     this.monthColor,
+    this.dotNumber,
     this.dotColor,
     this.dayNameColor,
     this.height = 80,
@@ -71,6 +72,7 @@ class CalendarTimeline extends StatefulWidget {
   final Color? activeDayColor;
   final Color? activeBackgroundDayColor;
   final Color? monthColor;
+  final int? dotNumber;
   final Color? dotColor;
   final Color? dayNameColor;
   final double height;
@@ -259,16 +261,26 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
   }
 
   /// Scroll to index day
-  void _moveToDayIndex(int index) {
-    if (_controllerDay.isAttached) {
-      _controllerDay.scrollTo(
-        index: index,
-        alignment: _scrollAlignment,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeIn,
-      );
+void _moveToDayIndex(int index) {
+  if (_controllerDay.isAttached) {
+    // Si l'index est parmi les 4 derniers, calculer un alignement dynamique.
+    double alignment;
+    if (index >= _days.length - 4) {
+      alignment = (index * 0.5 + 0.5) / _days.length;
+      if (alignment > 1.0) alignment = 1.0;
+    } else {
+      alignment = _scrollAlignment;
     }
+    _controllerDay.scrollTo(
+      index: index,
+      alignment: alignment,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeIn,
+    );
   }
+}
+
+
 
   void _onSelectYear(int index) {
     // Move to selected year
@@ -382,9 +394,9 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                 if (index == _years.length - 1)
                   // Last element to take space to do scroll to left side
                   SizedBox(
-                    width: MediaQuery.of(context).size.width -
-                        widget.leftMargin -
-                        (yearName.length * 10),
+                    width: 0//MediaQuery.of(context).size.width -
+                        // widget.leftMargin -
+                        // (yearName.length * 10),
                   ),
               ],
             ),
@@ -440,9 +452,9 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                 if (index == _months.length - 1)
                   // Last element to take space to do scroll to left side
                   SizedBox(
-                    width: MediaQuery.of(context).size.width -
-                        widget.leftMargin -
-                        (monthName.length * 10),
+                    width: 0//MediaQuery.of(context).size.width -
+                        // widget.leftMargin -
+                        // (monthName.length * 10),
                   ),
               ],
             ),
@@ -485,6 +497,7 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
                 activeDayColor: widget.activeDayColor,
                 activeDayBackgroundColor: widget.activeBackgroundDayColor,
                 showDot: _eventDates?.contains(currentDay) ?? false,
+                dotNumber: widget.dotNumber,
                 dotColor: widget.dotColor,
                 dayNameColor: widget.dayNameColor,
                 height: widget.height,
@@ -500,9 +513,9 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
               if (index == _days.length - 1)
                 // Last element to take space to do scroll to left side
                 SizedBox(
-                  width: MediaQuery.of(context).size.width -
-                      widget.leftMargin -
-                      65,
+                  width: 0// MediaQuery.of(context).size.width -
+                      // widget.leftMargin -
+                      // 65,
                 ),
             ],
           );
